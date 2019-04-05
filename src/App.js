@@ -6,14 +6,23 @@ import { Provider } from "react-redux";
 import logo from "./logo.svg";
 import "./App.css";
 
-import MoviesList from "./MoviesList";
-import MovieDetail from "./MovieDetail";
-import Toggle from "./Toggle";
-import rootReducer from "./rootReducer";
-import { createStore, compose } from "redux";
-import { composeWithDevTools } from "redux-devtools-extension";
+import MoviesList from "./movies/MoviesList";
+import MovieDetail from "./movies/MovieDetail";
+import Toggle from "./toggle/Toggle";
 
-const store = createStore(rootReducer, {}, composeWithDevTools());
+import rootReducer from "./rootReducer";
+import { createStore, applyMiddleware } from "redux";
+import { composeWithDevTools } from "redux-devtools-extension";
+import logger from "redux-logger";
+import thunk from "redux-thunk";
+import { save, load } from "redux-localstorage-simple";
+
+const middleware = [logger, thunk];
+const store = createStore(
+  rootReducer,
+  load(),
+  composeWithDevTools(applyMiddleware(...middleware, save()))
+);
 
 const App = () => (
   <Provider store={store}>
